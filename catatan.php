@@ -30,3 +30,11 @@
 
 
 // atribut enctype untuk mengelola file yang akan di tangkap ole variabel superglobal $_FILES
+
+
+// Pagination = limit
+
+
+
+// catatan Git
+// $ alias graph="git log --all --decorate --oneline --graph"

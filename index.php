@@ -8,7 +8,16 @@ if (!isset($_SESSION['login'])) {
 }
 
 require 'functions.php';
-$mahasiswa = query("SELECT * FROM mahasiswa ORDER BY id DESC");
+
+//  Pagination 
+$jumlahDataPerhalaman = 3;
+$jumlahData = count(query("SELECT * FROM mahasiswa"));
+$jumlahHalaman = ceil($jumlahData / $jumlahDataPerhalaman);
+$halamanAktif = (isset($_GET['halaman'])) ? $_GET['halaman'] : 1;
+$awalData = ($jumlahDataPerhalaman * $halamanAktif) - $jumlahDataPerhalaman;
+
+
+$mahasiswa = query("SELECT * FROM mahasiswa LIMIT $awalData, $jumlahDataPerhalaman");
 
 // Jika tombol cari ditekan
 if (isset($_POST["cari"])) {
@@ -39,6 +48,25 @@ if (isset($_POST["cari"])) {
       <button type="submit" name="cari">Cari</button>
    </form>
    <br>
+
+   <!-- Navigasi -->
+   <?php if ($halamanAktif > 1) : ?>
+      <a href="?halaman=<?= $halamanAktif - 1; ?>">&laquo;</a>
+   <?php endif; ?>
+
+   <?php for ($i = 1; $i <= $jumlahHalaman; $i++) : ?>
+      <?php if ($i == $halamanAktif) : ?>
+         <a href="?halaman=<?php echo $i; ?>" style="font-weight: bold; color:limegreen"><?= $i; ?></a>
+      <?php else : ?>
+         <a href="?halaman=<?php echo $i; ?>"><?= $i; ?></a>
+      <?php endif; ?>
+   <?php endfor; ?>
+
+   <?php if ($halamanAktif < $jumlahHalaman) : ?>
+      <a href="?halaman=<?= $halamanAktif + 1; ?>">&raquo;</a>
+   <?php endif; ?>
+
+   <br>
    <table border="1" cellpadding="10" cellspacing="0">
       <tr>
          <th>No</th>
@@ -66,7 +94,6 @@ if (isset($_POST["cari"])) {
          </tr>
          <?php $no++ ?>
       <?php } ?>
-
 
    </table>
 </body>

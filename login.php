@@ -9,7 +9,7 @@ if (isset($_COOKIE['id']) && isset($_COOKIE['key'])) {
    $key = $_COOKIE['key'];
 
    // ambil username berdasarkan id 
-   $result = mysqli_query($conn, "SELECT username FROM user WHERE id = $id");
+   $result = mysqli_query($conn, "SELECT * username FROM user WHERE id = $id");
 
    $row = mysqli_fetch_assoc($result);
 

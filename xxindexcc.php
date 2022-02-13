@@ -14,7 +14,6 @@ $result = mysqli_query($conn, "SELECT * FROM mahasiswa");
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 

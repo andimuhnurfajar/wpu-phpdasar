@@ -1,5 +1,23 @@
 <?php
 session_start();
+require 'Functions.php';
+
+// Cek cookie
+if (isset($_COOKIE['id']) && isset($_COOKIE['key'])) {
+
+   $id = $_COOKIE['id'];
+   $key = $_COOKIE['key'];
+
+   // ambil username berdasarkan id 
+   $result = mysqli_query($conn, "SELECT username FROM user WHERE id = $id");
+
+   $row = mysqli_fetch_assoc($result);
+
+   // cek cookie dan username
+   if ($key === hash('sha256', $row['username'])) {
+      $_SESSION['login'] = true;
+   }
+}
 
 if (isset($_SESSION['login'])) {
    header("Location: index.php");
@@ -8,7 +26,7 @@ if (isset($_SESSION['login'])) {
 
 
 
-require 'Functions.php';
+
 
 if (isset($_POST['login'])) {
    $username = $_POST["username"];
@@ -22,8 +40,16 @@ if (isset($_POST['login'])) {
       // Cek Password
       $row = mysqli_fetch_assoc($result);
       if (password_verify($password, $row["password"])) {
+
          // Set Session 
          $_SESSION["login"] = true;
+
+         // cek remember me
+         if (isset($_POST["remember"])) {
+            setcookie('id', $row['id'], time() + 120);
+            setcookie('key', hash('sha256', $row['username']), time() + 120);
+         }
+
          header("Location: index.php");
          exit;
       }
@@ -72,6 +98,10 @@ if (isset($_POST['login'])) {
          <li>
             <label for="password">Password<label>
                   <input type="password" name="password" id="password">
+         </li>
+         <li>
+            <label for="remember">Remember me<label>
+                  <input type="checkbox" name="remember" id="remember">
          </li>
          <li>
             <button type="submit" name="login">Login</button>
